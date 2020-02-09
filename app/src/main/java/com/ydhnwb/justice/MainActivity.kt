@@ -30,7 +30,9 @@ class MainActivity : AppCompatActivity() {
         })
         productViewModel.getSelectedProduct().observe(this, Observer {
             val totalQuantity: Int = it.map { h->  h.value }.sum()
+            val totalPrice : Int = it.map { h -> h.key.price!!*h.value }.sum()
             tv_item_indicator.text = "$totalQuantity items"
+            tv_total_price.text = "Rp.$totalPrice"
         })
         setupTab()
     }
@@ -68,11 +70,5 @@ class MainActivity : AppCompatActivity() {
         fragmentAdapter.addFragment(BookmenuFragment(), "Lainnya")
         viewPager.adapter = fragmentAdapter
         tabLayout.setupWithViewPager(viewPager)
-        for (i in 0 until tabLayout!!.tabCount) {
-            val tab = (tabLayout!!.getChildAt(0) as ViewGroup).getChildAt(i)
-            val p = tab.layoutParams as ViewGroup.MarginLayoutParams
-            p.setMargins(0, 0, 50, 0)
-            tab.requestLayout()
-        }
     }
 }

@@ -35,6 +35,7 @@ class ProductAdapter (private var products : MutableList<Product>, private var c
             itemView.product_image.load("https://cms.sehatq.com/public/img/article_img/tidak-membuat-gemuk-ini-9-manfaat-jus-alpukat-bagi-kesehatan-1573445329.jpg") {
                 transformations(RoundedCornersTransformation(15.0F))
             }
+            itemView.product_price.text = "Rp.${product.price}"
             itemView.setOnClickListener {
                 println(product.name)
                 productViewModel.addSelectedProduct(product)

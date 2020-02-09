@@ -1,5 +1,6 @@
 package com.ydhnwb.justice.fragments
 
+import android.content.res.Configuration
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
@@ -11,6 +12,7 @@ import com.ydhnwb.justice.adapters.ProductAdapter
 import com.ydhnwb.justice.viewmodels.ProductViewModel
 import kotlinx.android.synthetic.main.fragment_bookmenu.view.*
 
+
 class BookmenuFragment : Fragment(R.layout.fragment_bookmenu){
     private var productViewModel : ProductViewModel? = null
 
@@ -20,7 +22,11 @@ class BookmenuFragment : Fragment(R.layout.fragment_bookmenu){
             productViewModel = ViewModelProvider(it).get(ProductViewModel::class.java)
             productViewModel!!.fetchAllProduct()
             view.rv_product.apply {
-                layoutManager = GridLayoutManager(it, 2)
+                layoutManager = if(this.resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT){
+                    GridLayoutManager(it, 2)
+                }else{
+                    GridLayoutManager(it, 4)
+                }
                 adapter = ProductAdapter(mutableListOf(), it, productViewModel!!)
             }
             productViewModel!!.getAllProduct().observe(it, Observer {updatedProducts ->
@@ -32,5 +38,4 @@ class BookmenuFragment : Fragment(R.layout.fragment_bookmenu){
             })
         }
     }
-
 }
