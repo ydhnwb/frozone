@@ -24,5 +24,31 @@ class JusticeUtils {
             val pref = context.getSharedPreferences("USER", MODE_PRIVATE)
             pref.edit().clear().apply()
         }
+
+        fun isFirstTime(context: Context) : Boolean {
+            val pref = context.getSharedPreferences("UTILS", MODE_PRIVATE)
+            return pref.getBoolean("FIRST_TIME", true)
+        }
+
+        fun setFirstTime(context: Context, value : Boolean){
+            val pref = context.getSharedPreferences("UTILS", MODE_PRIVATE)
+            pref.edit().apply{
+                putBoolean("FIRST_TIME", value)
+                apply()
+            }
+        }
+
+        fun setDefaultPin(context: Context){
+            val pref = context.getSharedPreferences("UTILS", MODE_PRIVATE)
+            pref.edit().apply{
+                putString("PIN", "1234")
+                apply()
+            }
+        }
+
+        fun getPin(context: Context) : String? {
+            val pref = context.getSharedPreferences("UTILS", MODE_PRIVATE)
+            return pref.getString("PIN", null)
+        }
     }
 }

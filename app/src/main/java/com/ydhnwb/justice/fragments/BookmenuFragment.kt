@@ -1,5 +1,6 @@
 package com.ydhnwb.justice.fragments
 
+import android.annotation.SuppressLint
 import android.content.res.Configuration
 import android.os.Bundle
 import android.view.View
@@ -31,6 +32,7 @@ class BookmenuFragment : Fragment(R.layout.fragment_bookmenu){
         }
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         activity?.let {
@@ -47,6 +49,7 @@ class BookmenuFragment : Fragment(R.layout.fragment_bookmenu){
                 view.rv_product.adapter?.let { a->
                     if(a is ProductAdapter){
                         arguments?.let { arg ->
+                            view.status_view.visibility = View.GONE
                             val category : Category? = arg.getParcelable("category")
                             category?.let {cat ->
                                 val filteredProducts = updatedProducts.filter { product ->
@@ -54,10 +57,14 @@ class BookmenuFragment : Fragment(R.layout.fragment_bookmenu){
                                 }
                                 a.updateList(filteredProducts)
                             } ?: kotlin.run {
-                                a.updateList(updatedProducts)
+                                a.updateList(listOf())
                             }
                         } ?: kotlin.run {
-                            a.updateList(updatedProducts)
+                            a.updateList(listOf())
+                            view.status_view.apply {
+                                visibility = View.VISIBLE
+                                text = "Untuk mencari item, ketik pada field pencarian"
+                            }
                         }
                     }
                 }
