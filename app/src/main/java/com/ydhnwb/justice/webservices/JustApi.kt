@@ -1,6 +1,7 @@
 package com.ydhnwb.justice.webservices
 
 import com.google.gson.annotations.SerializedName
+import com.ydhnwb.justice.models.Category
 import com.ydhnwb.justice.models.Product
 import com.ydhnwb.justice.utils.JusticeUtils
 import okhttp3.OkHttpClient
@@ -36,6 +37,12 @@ class JustApi {
 interface JusticeAPIService{
     @GET("api/product/category/2")
     fun products() : Call<WrappedListResponse<Product>>
+
+    @GET("api/category")
+    fun getAllCategory() : Call<WrappedListResponse<Category>>
+
+    @GET("api/product")
+    fun getAllProduct() : Call<WrappedListResponse<Product>>
 }
 
 data class WrappedResponse<T>(

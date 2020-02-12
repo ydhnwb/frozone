@@ -5,11 +5,11 @@ import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.ydhnwb.justice.fragments.BookmenuFragment
+import com.ydhnwb.justice.models.Category
 import com.ydhnwb.justice.utils.CustomFragmentPagerAdapter
 import com.ydhnwb.justice.viewmodels.ProductState
 import com.ydhnwb.justice.viewmodels.ProductViewModel
@@ -25,16 +25,20 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         supportActionBar?.hide()
         productViewModel = ViewModelProvider(this).get(ProductViewModel::class.java)
-        productViewModel.getState().observe(this, Observer {
-            handleUIState(it)
-        })
-        productViewModel.getSelectedProduct().observe(this, Observer {
+        if(productViewModel.hasFetched.value == false){
+            productViewModel.fetchAllCategory()
+        }
+        productViewModel.listenState().observe(this, Observer { it -> handleUIState(it) })
+        productViewModel.listenSelectedProduct().observe(this, Observer {
             val totalQuantity: Int = it.map { h->  h.value }.sum()
             val totalPrice : Int = it.map { h -> h.key.price!!*h.value }.sum()
             tv_item_indicator.text = "$totalQuantity items"
             tv_total_price.text = "Rp.$totalPrice"
         })
-        setupTab()
+
+        productViewModel.listenAllcategory().observe(this, Observer {
+            setupTab(it)
+        })
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -51,11 +55,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun toast(mess : String?) = Toast.makeText(this, mess, Toast.LENGTH_LONG).show()
     private fun isLoading(state : Boolean){
-        if(state){
-            loading.visibility = View.VISIBLE
-        }else{
-            loading.visibility = View.GONE
-        }
+        if(state){ loading.visibility = View.VISIBLE }else{ loading.visibility = View.GONE }
     }
     private fun handleUIState(it : ProductState){
         when(it){
@@ -63,12 +63,19 @@ class MainActivity : AppCompatActivity() {
             is ProductState.IsLoading -> isLoading(it.state)
         }
     }
-    private fun setupTab(){
+    private fun setupTab(categories : List<Category>){
         val fragmentAdapter = CustomFragmentPagerAdapter(supportFragmentManager)
-        fragmentAdapter.addFragment(BookmenuFragment(), "Makanan")
-        fragmentAdapter.addFragment(BookmenuFragment(), "Minuman")
-        fragmentAdapter.addFragment(BookmenuFragment(), "Lainnya")
+        for (c in categories){
+            println(c.name)
+            fragmentAdapter.addFragment(BookmenuFragment.instance(c), c.name.toString())
+        }
+        fragmentAdapter.addFragment(BookmenuFragment.instance(null), "Hasil Pencarian")
         viewPager.adapter = fragmentAdapter
         tabLayout.setupWithViewPager(viewPager)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        productViewModel.fetchAllProduct()
     }
 }
