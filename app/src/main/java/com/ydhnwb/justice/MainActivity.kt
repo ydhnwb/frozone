@@ -97,9 +97,9 @@ class MainActivity : AppCompatActivity() {
             override fun onQueryTextChange(newText: CharSequence): Boolean { return false }
             override fun onQueryTextSubmit(query: CharSequence): Boolean {
                 if(query.isNotEmpty()){
-                    Toast.makeText(this@MainActivity, query, Toast.LENGTH_LONG).show()
                     val size = fragmentAdapter.count
                     if(size != 0){
+                        productViewModel.searchProduct(query.toString())
                         viewPager.setCurrentItem(size-1, true)
                         search_bar.clearFocus()
                     }
@@ -119,7 +119,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         super.onWindowFocusChanged(hasFocus)
-        if (hasFocus) hideSystemUI()
+//        if (hasFocus) hideSystemUI()
     }
 
     private fun hideSystemUI() { window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN }

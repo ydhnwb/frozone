@@ -14,7 +14,6 @@ import com.ydhnwb.justice.models.Category
 import com.ydhnwb.justice.viewmodels.ProductViewModel
 import kotlinx.android.synthetic.main.fragment_bookmenu.view.*
 
-
 class BookmenuFragment : Fragment(R.layout.fragment_bookmenu){
     private lateinit var productViewModel : ProductViewModel
 
@@ -45,30 +44,41 @@ class BookmenuFragment : Fragment(R.layout.fragment_bookmenu){
                 }
                 adapter = ProductAdapter(mutableListOf(), it, productViewModel)
             }
-            productViewModel.listenAllProduct().observe(it, Observer {updatedProducts ->
-                view.rv_product.adapter?.let { a->
-                    if(a is ProductAdapter){
-                        arguments?.let { arg ->
-                            view.status_view.visibility = View.GONE
-                            val category : Category? = arg.getParcelable("category")
-                            category?.let {cat ->
-                                val filteredProducts = updatedProducts.filter { product ->
-                                    product.category.equals(cat.name)
-                                }
-                                a.updateList(filteredProducts)
-                            } ?: kotlin.run {
-                                a.updateList(listOf())
+            if(arguments == null ){
+                view.status_view.visibility = View.VISIBLE
+                productViewModel.listenSearchResultProduct().observe(it, Observer {
+                    view.rv_product.adapter?.let { adapter ->
+                        if(adapter is ProductAdapter){
+                            if(it.isEmpty()){
+                                view.status_view.visibility = View.VISIBLE
+                                view.status_view.text = "Tidak ada hasil. Tap pada field di atas untuk mencari"
+                            }else{
+                                view.status_view.visibility = View.GONE
                             }
-                        } ?: kotlin.run {
-                            a.updateList(listOf())
-                            view.status_view.apply {
-                                visibility = View.VISIBLE
-                                text = "Untuk mencari item, ketik pada field pencarian"
+                            adapter.updateList(it)
+                        }
+                    }
+                })
+            }else{
+                productViewModel.listenAllProduct().observe(it, Observer {updatedProducts ->
+                    view.rv_product.adapter?.let { a->
+                        if(a is ProductAdapter){
+                            arguments?.let { arg ->
+                                view.status_view.visibility = View.GONE
+                                val category : Category? = arg.getParcelable("category")
+                                category?.let {cat ->
+                                    val filteredProducts = updatedProducts.filter { product ->
+                                        product.category.equals(cat.name)
+                                    }
+                                    a.updateList(filteredProducts)
+                                } ?: kotlin.run {
+                                    a.updateList(listOf())
+                                }
                             }
                         }
                     }
-                }
-            })
+                })
+            }
         }
     }
 }

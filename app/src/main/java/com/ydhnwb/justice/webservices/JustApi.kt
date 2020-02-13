@@ -3,12 +3,14 @@ package com.ydhnwb.justice.webservices
 import com.google.gson.annotations.SerializedName
 import com.ydhnwb.justice.models.Category
 import com.ydhnwb.justice.models.Product
+import com.ydhnwb.justice.models.Topping
 import com.ydhnwb.justice.utils.JusticeUtils
 import okhttp3.OkHttpClient
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
+import retrofit2.http.Path
 import java.util.concurrent.TimeUnit
 
 class JustApi {
@@ -35,14 +37,17 @@ class JustApi {
 }
 
 interface JusticeAPIService{
-    @GET("api/product/category/2")
-    fun products() : Call<WrappedListResponse<Product>>
-
     @GET("api/category")
     fun getAllCategory() : Call<WrappedListResponse<Category>>
 
     @GET("api/product")
     fun getAllProduct() : Call<WrappedListResponse<Product>>
+
+    @GET("api/toping")
+    fun getAllTopping() : Call<WrappedListResponse<Topping>>
+
+    @GET("api/product/search/{query}")
+    fun searchProduct(@Path("query") query : String) : Call<WrappedListResponse<Product>>
 }
 
 data class WrappedResponse<T>(
