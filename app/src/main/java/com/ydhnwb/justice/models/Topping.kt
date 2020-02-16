@@ -13,5 +13,6 @@ data class Topping(
     @SerializedName("category")
     var category : String? = null,
     @SerializedName("price")
-    var price : Int? = 0
+    var price : Int? = 0,
+    var isChecked : Boolean = false
 ) : Parcelable

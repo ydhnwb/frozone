@@ -4,11 +4,14 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import coil.api.load
 import coil.transform.RoundedCornersTransformation
 import com.ydhnwb.justice.R
 import com.ydhnwb.justice.models.Product
+import com.ydhnwb.justice.utils.JusticeUtils
+import com.ydhnwb.justice.utils.ToppingPopup
 import com.ydhnwb.justice.viewmodels.ProductViewModel
 import kotlinx.android.synthetic.main.item_list_products.view.*
 
@@ -35,10 +38,12 @@ class ProductAdapter (private var products : MutableList<Product>, private var c
             itemView.product_image.load("https://cms.sehatq.com/public/img/article_img/tidak-membuat-gemuk-ini-9-manfaat-jus-alpukat-bagi-kesehatan-1573445329.jpg") {
                 transformations(RoundedCornersTransformation(15.0F))
             }
-            itemView.product_price.text = "Rp.${product.price}"
+            itemView.product_price.text = JusticeUtils.setToIDR(product.price!!)
             itemView.setOnClickListener {
-                println(product.name)
                 productViewModel.addSelectedProduct(product)
+                val fragmentManager = context as AppCompatActivity
+                ToppingPopup().show(fragmentManager.supportFragmentManager, "topping_popup")
+
             }
         }
     }

@@ -2,6 +2,8 @@ package com.ydhnwb.justice.utils
 
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
+import java.text.NumberFormat
+import java.util.*
 
 class JusticeUtils {
     companion object {
@@ -49,6 +51,12 @@ class JusticeUtils {
         fun getPin(context: Context) : String? {
             val pref = context.getSharedPreferences("UTILS", MODE_PRIVATE)
             return pref.getString("PIN", null)
+        }
+
+        fun setToIDR(num : Int) : String {
+            val localeID = Locale("in", "ID")
+            val formatRupiah: NumberFormat = NumberFormat.getCurrencyInstance(localeID)
+            return formatRupiah.format(num)
         }
     }
 }
