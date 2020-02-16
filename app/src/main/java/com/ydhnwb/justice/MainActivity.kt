@@ -39,7 +39,7 @@ class MainActivity : AppCompatActivity() {
         }).start()
         productViewModel = ViewModelProvider(this).get(ProductViewModel::class.java)
         if(productViewModel.listenHasFetched().value == false){ productViewModel.fetchAllCategory() }
-        productViewModel.listenState().observe(this, Observer { it -> handleUIState(it) })
+        productViewModel.listenState().observe(this, Observer { handleUIState(it) })
         productViewModel.listenSelectedProduct().observe(this, Observer {
             val totalQuantity: Int = it.map { h->  h.value }.sum()
             val totalPrice : Int = it.map { h -> h.key.price!!*h.value }.sum()
@@ -92,6 +92,15 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupSearchBar(){
         search_bar.inflateMenu(R.menu.menu_main)
+        search_bar.menu.setOnMenuItemClickListener { item ->
+            when(item?.itemId){
+                R.id.action_settings -> {
+                    startActivity(Intent(this@MainActivity, PromptPinActivity::class.java))
+                    true
+                }
+                else-> true
+            }
+        }
         search_bar.setOnSearchActionListener(object : MaterialSearchBar.OnSearchActionListener{
             override fun onButtonClicked(buttonCode: Int) {}
             override fun onSearchStateChanged(enabled: Boolean) {}

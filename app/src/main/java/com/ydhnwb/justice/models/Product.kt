@@ -11,7 +11,8 @@ data class Product (
     @SerializedName("category") var category : String?,
     @SerializedName("price") var price : Int?,
     @SerializedName("image") var image : String?,
-    @SerializedName("description") var description : String?
+    @SerializedName("description") var description : String?,
+    var selectedToppings : MutableList<Topping> = mutableListOf()
 )
     : Parcelable
 {
