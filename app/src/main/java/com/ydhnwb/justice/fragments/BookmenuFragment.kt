@@ -46,7 +46,7 @@ class BookmenuFragment : Fragment(R.layout.fragment_bookmenu){
             }
             if(arguments == null ){
                 view.status_view.visibility = View.VISIBLE
-                productViewModel.listenSearchResultProduct().observe(it, Observer {
+                productViewModel.listenSearchResultProduct().observe(viewLifecycleOwner, Observer {
                     view.rv_product.adapter?.let { adapter ->
                         if(adapter is ProductAdapter){
                             if(it.isEmpty()){
@@ -60,7 +60,7 @@ class BookmenuFragment : Fragment(R.layout.fragment_bookmenu){
                     }
                 })
             }else{
-                productViewModel.listenAllProduct().observe(it, Observer {updatedProducts ->
+                productViewModel.listenAllProduct().observe(viewLifecycleOwner, Observer {updatedProducts ->
                     view.rv_product.adapter?.let { a->
                         if(a is ProductAdapter){
                             arguments?.let { arg ->
@@ -71,8 +71,6 @@ class BookmenuFragment : Fragment(R.layout.fragment_bookmenu){
                                         product.category.equals(cat.name)
                                     }
                                     a.updateList(filteredProducts)
-                                } ?: kotlin.run {
-                                    a.updateList(listOf())
                                 }
                             }
                         }

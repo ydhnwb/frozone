@@ -9,7 +9,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.lapism.search.internal.SearchLayout
+import com.mancj.materialsearchbar.MaterialSearchBar
 import com.ydhnwb.justice.activities.IntroActivity
 import com.ydhnwb.justice.activities.PromptPinActivity
 import com.ydhnwb.justice.fragments.BookmenuFragment
@@ -38,9 +38,7 @@ class MainActivity : AppCompatActivity() {
             }
         }).start()
         productViewModel = ViewModelProvider(this).get(ProductViewModel::class.java)
-        if(productViewModel.hasFetched.value == false){
-            productViewModel.fetchAllCategory()
-        }
+        if(productViewModel.listenHasFetched().value == false){ productViewModel.fetchAllCategory() }
         productViewModel.listenState().observe(this, Observer { it -> handleUIState(it) })
         productViewModel.listenSelectedProduct().observe(this, Observer {
             val totalQuantity: Int = it.map { h->  h.value }.sum()
@@ -62,7 +60,10 @@ class MainActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.action_settings -> true
+            R.id.action_settings -> {
+                startActivity(Intent(this, PromptPinActivity::class.java))
+                true
+            }
             else -> super.onOptionsItemSelected(item)
         }
     }
@@ -79,10 +80,7 @@ class MainActivity : AppCompatActivity() {
     }
     private fun setupTab(categories : List<Category>){
         fragmentAdapter = CustomFragmentPagerAdapter(supportFragmentManager)
-        for (c in categories){
-            println(c.name)
-            fragmentAdapter.addFragment(BookmenuFragment.instance(c), c.name.toString())
-        }
+        for (c in categories){ fragmentAdapter.addFragment(BookmenuFragment.instance(c), c.name.toString()) }
         fragmentAdapter.addFragment(BookmenuFragment.instance(null), "Hasil Pencarian")
         viewPager.adapter = fragmentAdapter
         tabLayout.setupWithViewPager(viewPager)
@@ -91,38 +89,24 @@ class MainActivity : AppCompatActivity() {
         super.onResume()
         productViewModel.fetchAllProduct()
     }
+
     private fun setupSearchBar(){
-        search_bar.setTextHint("Cari...")
-        search_bar.setOnQueryTextListener(object :  SearchLayout.OnQueryTextListener{
-            override fun onQueryTextChange(newText: CharSequence): Boolean { return false }
-            override fun onQueryTextSubmit(query: CharSequence): Boolean {
-                if(query.isNotEmpty()){
-                    val size = fragmentAdapter.count
-                    if(size != 0){
-                        productViewModel.searchProduct(query.toString())
-                        viewPager.setCurrentItem(size-1, true)
-                        search_bar.clearFocus()
+        search_bar.inflateMenu(R.menu.menu_main)
+        search_bar.setOnSearchActionListener(object : MaterialSearchBar.OnSearchActionListener{
+            override fun onButtonClicked(buttonCode: Int) {}
+            override fun onSearchStateChanged(enabled: Boolean) {}
+            override fun onSearchConfirmed(text: CharSequence?) {
+                text?.let {
+                    if(text.isNotEmpty()){
+                        val size = fragmentAdapter.count
+                        if(size != 0){
+                            productViewModel.searchProduct(text.toString())
+                            viewPager.setCurrentItem(size-1, true)
+                            search_bar.clearFocus()
+                        }
                     }
-                    return true
                 }
-                return false
-            }
-        })
-        search_bar.setMicIconImageResource(R.drawable.ic_more_vert_black_24dp)
-        search_bar.setNavigationIconImageResource(R.drawable.ic_search_black_24dp)
-        search_bar.setOnMicClickListener(object: SearchLayout.OnMicClickListener{
-            override fun onMicClick() {
-                startActivity(Intent(this@MainActivity, PromptPinActivity::class.java))
             }
         })
     }
-
-    override fun onWindowFocusChanged(hasFocus: Boolean) {
-        super.onWindowFocusChanged(hasFocus)
-//        if (hasFocus) hideSystemUI()
-    }
-
-    private fun hideSystemUI() { window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN }
-
-
 }

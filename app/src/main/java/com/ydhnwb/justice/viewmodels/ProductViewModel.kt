@@ -21,7 +21,7 @@ class ProductViewModel : ViewModel(){
     private var state : SingleLiveEvent<ProductState> = SingleLiveEvent()
     private var allCategory = MutableLiveData<List<Category>>()
     private var allTopping = MutableLiveData<List<Topping>>()
-    var hasFetched = MutableLiveData<Boolean>().apply { value = false }
+    private var hasFetched = MutableLiveData<Boolean>().apply { value = false }
 
 
     fun fetchAllProduct(){
@@ -164,6 +164,8 @@ class ProductViewModel : ViewModel(){
     fun listenState() = state
     fun listenAllcategory() = allCategory
     fun listenSearchResultProduct() = searchResultProduct
+    fun setHasFetched(state : Boolean) { hasFetched.value = state }
+    fun listenHasFetched() = hasFetched
 }
 
 sealed class ProductState {

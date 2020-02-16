@@ -22,22 +22,25 @@
 
 
     <LinearLayout
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:layout_gravity="top"
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <com.lapism.search.widget.SearchView
-            android:elevation="16dp"
-            android:id="@+id/search_bar"
+        <com.mancj.materialsearchbar.MaterialSearchBar
+            style="@style/MaterialSearchBarLight"
+            app:mt_hint="Cari..."
+            android:elevation="2dp"
+            app:mt_maxSuggestionsCount="5"
+            app:mt_menuIconDrawable="@drawable/ic_search_black_24dp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:id="@+id/search_bar" />
 
         <com.google.android.material.tabs.TabLayout
             android:layout_gravity="top"
             android:elevation="16dp"
-
             android:background="@null"
             android:id="@+id/tabLayout"
             android:layout_width="match_parent"

@@ -44,17 +44,9 @@
             android:paddingEnd="16dp"
             android:text="Rp.0"
             android:maxLines="1"
+            android:layout_marginBottom="16dp"
             android:id="@+id/product_price"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-
-
-        <com.google.android.material.button.MaterialButton
-            android:layout_width="wrap_content"
-            android:text="Lihat"
-            android:layout_margin="16dp"
-            android:textAllCaps="false"
-            android:layout_gravity="end"
             android:layout_height="wrap_content"/>
     </LinearLayout>
 

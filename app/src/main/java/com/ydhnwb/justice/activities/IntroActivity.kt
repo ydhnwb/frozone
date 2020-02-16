@@ -18,14 +18,14 @@ class IntroActivity : AppIntro2() {
         val sliderPage = SliderPage().apply {
             description = "Lorem ipsum dolor sit amet"
             descColor = Color.parseColor("#ffffff")
-            imageDrawable = R.drawable.search_ic_outline_history_24px
+            imageDrawable = R.drawable.ic_search_black_24dp
             bgColor = Color.parseColor("#1E80CE")
         }
 
         val sliderPage2 = SliderPage().apply {
             description = "Lorem ipsum dolor sit amet"
             descColor = Color.parseColor("#ffffff")
-            imageDrawable = R.drawable.search_ic_outline_history_24px
+            imageDrawable = R.drawable.ic_search_black_24dp
             bgColor = Color.parseColor("#1E80CE")
         }
 
