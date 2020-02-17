@@ -162,9 +162,8 @@ class ProductViewModel : ViewModel(){
     fun listenSelectedProduct() = selectedProducts
     fun listenAllProduct() = allProduct
     fun listenState() = state
-    fun listenAllcategory() = allCategory
+    fun listenAllCategory() = allCategory
     fun listenSearchResultProduct() = searchResultProduct
-    fun setHasFetched(state : Boolean) { hasFetched.value = state }
     fun listenHasFetched() = hasFetched
 }
 

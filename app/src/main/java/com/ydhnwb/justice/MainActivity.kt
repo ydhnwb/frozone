@@ -30,6 +30,9 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
         supportActionBar?.hide()
+        //checking, if this app is first opened by the user
+        //if yes, Intent to IntroActivity
+        //if no, then still in this page
         Thread(Runnable {
             if (JusticeUtils.isFirstTime(this@MainActivity)) {
                 runOnUiThread { startActivity(Intent(this@MainActivity, IntroActivity::class.java).also {
@@ -37,7 +40,11 @@ class MainActivity : AppCompatActivity() {
                 })}
             }
         }).start()
+
         productViewModel = ViewModelProvider(this).get(ProductViewModel::class.java)
+        //when we observe category, then we need to create a new tab layout instance.
+        //it is bad. So i put hasfetched variable
+        //if the tab is already exists, keep the current page, if not, then create it
         if(productViewModel.listenHasFetched().value == false){ productViewModel.fetchAllCategory() }
         productViewModel.listenState().observe(this, Observer { handleUIState(it) })
         productViewModel.listenSelectedProduct().observe(this, Observer {
@@ -47,7 +54,7 @@ class MainActivity : AppCompatActivity() {
             tv_total_price.text = "Rp.$totalPrice"
         })
 
-        productViewModel.listenAllcategory().observe(this, Observer {
+        productViewModel.listenAllCategory().observe(this, Observer {
             setupTab(it)
         })
         setupSearchBar()
@@ -78,6 +85,8 @@ class MainActivity : AppCompatActivity() {
             is ProductState.IsLoading -> isLoading(it.state)
         }
     }
+
+    //creating a tabs based on category we retrieve from api
     private fun setupTab(categories : List<Category>){
         fragmentAdapter = CustomFragmentPagerAdapter(supportFragmentManager)
         for (c in categories){ fragmentAdapter.addFragment(BookmenuFragment.instance(c), c.name.toString()) }
@@ -85,6 +94,7 @@ class MainActivity : AppCompatActivity() {
         viewPager.adapter = fragmentAdapter
         tabLayout.setupWithViewPager(viewPager)
     }
+
     override fun onResume() {
         super.onResume()
         productViewModel.fetchAllProduct()
