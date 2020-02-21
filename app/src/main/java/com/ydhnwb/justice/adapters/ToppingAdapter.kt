@@ -27,9 +27,13 @@ class ToppingAdapter (private var toppings : MutableList<Topping>, private var c
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_list_topping, parent, false))
+    fun changeList(_toppings : MutableList<Topping>){
+        toppings.clear()
+        toppings.addAll(_toppings)
+        notifyDataSetChanged()
     }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder = ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_list_topping, parent, false))
 
     override fun getItemCount() = toppings.size
 

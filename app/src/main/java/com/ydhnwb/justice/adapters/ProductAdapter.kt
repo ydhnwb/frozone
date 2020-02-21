@@ -42,7 +42,7 @@ class ProductAdapter (private var products : MutableList<Product>, private var c
             itemView.setOnClickListener {
                 productViewModel.addSelectedProduct(product)
                 val fragmentManager = context as AppCompatActivity
-                ToppingPopup().show(fragmentManager.supportFragmentManager, "topping_popup")
+                ToppingPopup.instance(product).show(fragmentManager.supportFragmentManager, "topping_popup")
             }
         }
     }

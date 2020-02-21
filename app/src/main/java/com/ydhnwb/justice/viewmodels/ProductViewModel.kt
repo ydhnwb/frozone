@@ -19,8 +19,10 @@ class ProductViewModel : ViewModel(){
     private var searchResultProduct = MutableLiveData<List<Product>>()
     private var api = JustApi.instance()
     private var state : SingleLiveEvent<ProductState> = SingleLiveEvent()
+    private var toppingPopupState : SingleLiveEvent<ToppingPopupState> = SingleLiveEvent()
     private var allCategory = MutableLiveData<List<Category>>()
     private var allTopping = MutableLiveData<List<Topping>>()
+    private var betaSelectedProducts = MutableLiveData<List<Product>>()
     private var hasFetched = MutableLiveData<Boolean>().apply { value = false }
 
 
@@ -65,6 +67,12 @@ class ProductViewModel : ViewModel(){
         selectedProducts.value = selected
     }
 
+    fun betaAddSelectedProduct(product: Product){
+        with(betaSelectedProducts.value as MutableList){
+            add(product)
+        }
+    }
+
     fun fetchAllCategory(){
         try{
             state.value = ProductState.IsLoading(true)
@@ -98,12 +106,12 @@ class ProductViewModel : ViewModel(){
 
     fun fetchAllTopping(){
         try{
-            state.value = ProductState.IsLoading(true)
+            toppingPopupState.value = ToppingPopupState.IsLoading(true)
             api.getAllTopping().enqueue(object : Callback<WrappedListResponse<Topping>>{
                 override fun onFailure(call: Call<WrappedListResponse<Topping>>, t: Throwable) {
                     println("OnFailure -> ${t.message}")
-                    state.value = ProductState.IsLoading(false)
-                    state.value = ProductState.ShowToast(t.message.toString())
+                    toppingPopupState.value = ToppingPopupState.IsLoading(false)
+                    toppingPopupState.value = ToppingPopupState.ShowToast(t.message.toString())
                 }
 
                 override fun onResponse(call: Call<WrappedListResponse<Topping>>, response: Response<WrappedListResponse<Topping>>) {
@@ -115,15 +123,15 @@ class ProductViewModel : ViewModel(){
                             }
                         }
                     }else{
-                        state.value = ProductState.ShowToast("Cannot get topping")
+                        toppingPopupState.value = ToppingPopupState.ShowToast("Cannot get topping")
                     }
-                    state.value = ProductState.IsLoading(false)
+                    toppingPopupState.value = ToppingPopupState.IsLoading(false)
                 }
             })
         }catch (e:Exception){
             println(e.message)
-            state.value = ProductState.IsLoading(false)
-            state.value = ProductState.ShowToast(e.message.toString())
+            toppingPopupState.value = ToppingPopupState.IsLoading(false)
+            toppingPopupState.value = ToppingPopupState.ShowToast(e.message.toString())
         }
     }
 
@@ -165,9 +173,17 @@ class ProductViewModel : ViewModel(){
     fun listenAllCategory() = allCategory
     fun listenSearchResultProduct() = searchResultProduct
     fun listenHasFetched() = hasFetched
+    fun betaListenSelectedProducts() = betaSelectedProducts
+    fun listenAllTopping() = allTopping
+    fun listenToppingPopupState() = toppingPopupState
 }
 
 sealed class ProductState {
     data class IsLoading(var state: Boolean = false) : ProductState()
     data class ShowToast(var message : String) : ProductState()
+}
+
+sealed class ToppingPopupState{
+    data class IsLoading(var state : Boolean) : ToppingPopupState()
+    data class ShowToast(var message : String) : ToppingPopupState()
 }

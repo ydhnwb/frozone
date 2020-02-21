@@ -2,19 +2,42 @@ package com.ydhnwb.justice.utils
 
 import android.app.AlertDialog
 import android.app.Dialog
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.DialogFragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ydhnwb.justice.R
 import com.ydhnwb.justice.adapters.ToppingAdapter
+import com.ydhnwb.justice.models.Product
 import com.ydhnwb.justice.models.Topping
+import com.ydhnwb.justice.viewmodels.ProductViewModel
+import com.ydhnwb.justice.viewmodels.ToppingPopupState
 import kotlinx.android.synthetic.main.popup_topping.view.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.util.Locale.filter
 
 
 class ToppingPopup : DialogFragment(){
+    private lateinit var productViewModel: ProductViewModel
+
+    companion object {
+        fun instance(product: Product) : ToppingPopup{
+            val args = Bundle()
+            args.putParcelable("product", product)
+            return ToppingPopup().apply {
+                arguments = args
+            }
+        }
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.popup_topping, container)
@@ -22,25 +45,37 @@ class ToppingPopup : DialogFragment(){
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val toppings = mutableListOf<Topping>()
-        toppings.add(Topping(1, "Oreo", "Minuman", 3000))
-        toppings.add(Topping(3, "Mesis", "Minuman", 3000))
-        toppings.add(Topping(4, "Milo", "Minuman", 3000))
-        toppings.add(Topping(5, "Topping 1", "Minuman", 3000))
-        toppings.add(Topping(6, "Topping 2", "Minuman", 3000))
-        toppings.add(Topping(8, "Topping 3", "Minuman", 3000))
-        toppings.add(Topping(9, "Topping 4", "Minuman", 3000))
-        toppings.add(Topping(10, "Topping 5", "Minuman", 3000))
-        toppings.add(Topping(11, "Topping 6", "Minuman", 3000))
-        toppings.add(Topping(12, "Topping 7", "Minuman", 3000))
+        productViewModel = ViewModelProvider(activity!!).get(ProductViewModel::class.java)
         view.rv_popup_topping.apply {
             layoutManager = LinearLayoutManager(activity)
-            adapter = ToppingAdapter(toppings, activity!!)
+            adapter = ToppingAdapter(mutableListOf(), activity!!)
         }
+        productViewModel.listenAllTopping().observe(viewLifecycleOwner, Observer {
+            CoroutineScope(Dispatchers.Default).launch{3
+                filterTopping(it)
+            }
+        })
+        productViewModel.listenToppingPopupState().observe(viewLifecycleOwner, Observer {
+            when(it){
+                is ToppingPopupState.IsLoading -> {
+                    if(it.state){
+                        view.loading_popup.visibility = View.VISIBLE
+                        view.rv_popup_topping.visibility = View.GONE
+                    }else{
+                        view.rv_popup_topping.visibility = View.VISIBLE
+                        view.loading_popup.visibility = View.GONE
+                    }
+                }
+                is ToppingPopupState.ShowToast -> Toast.makeText(activity, it.message, Toast.LENGTH_LONG).show()
+            }
+        })
+        productViewModel.fetchAllTopping()
+
+
         view.btn_submit_popup_topping.setOnClickListener {
-            this.dialog?.dismiss()
+            println("Dismissing... submitting")
+            this.dismiss()
         }
-        this.dialog?.setTitle("Pilih topping:")
     }
 
     override fun onStart() {
@@ -48,4 +83,21 @@ class ToppingPopup : DialogFragment(){
         dialog?.window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
     }
 
+    private suspend fun filterTopping(it : List<Topping>){
+        val product : Product = arguments?.getParcelable("product")!!
+        val availableToppings = it.filter { topping ->
+            topping.category.equals(product.category)
+        }.toMutableList()
+        attachToRecycler(availableToppings)
+    }
+
+    private suspend fun attachToRecycler(filteredToppings : MutableList<Topping>){
+        withContext(Dispatchers.Main){
+            view!!.rv_popup_topping.adapter?.let { adapter ->
+                if(adapter is ToppingAdapter){
+                    adapter.changeList(filteredToppings)
+                }
+            }
+        }
+    }
 }
