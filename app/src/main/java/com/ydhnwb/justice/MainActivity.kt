@@ -174,4 +174,13 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+
+    override fun onBackPressed() {
+        if(bottomSheet.state == BottomSheetBehavior.STATE_EXPANDED){
+            bottomSheet.state = BottomSheetBehavior.STATE_HIDDEN
+            return
+        }else{
+            super.onBackPressed()
+        }
+    }
 }
