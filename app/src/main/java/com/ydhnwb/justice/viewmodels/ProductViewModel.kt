@@ -67,6 +67,16 @@ class ProductViewModel : ViewModel(){
         selectedProducts.value = selected
     }
 
+    fun betaDeleteSelectedProduct(product: Product, pos : Int) {
+        val _selectedProducts = if(betaSelectedProducts.value == null){
+            mutableListOf()
+        } else {
+            betaSelectedProducts.value as MutableList<Product>
+        }
+        _selectedProducts.remove(product)
+        betaSelectedProducts.value = _selectedProducts
+    }
+
     fun betaAddSelectedProduct(product: Product){
        val _selectedProducts = if(betaSelectedProducts.value == null){
            mutableListOf()
