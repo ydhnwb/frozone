@@ -12,7 +12,7 @@
     app:layout_behavior="@string/bottom_sheet_behavior"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <LinearLayout
+    <RelativeLayout
         android:orientation="vertical"
         android:padding="16dp"
         android:layout_width="match_parent"
@@ -25,15 +25,14 @@
             android:layout_height="match_parent">
         </androidx.recyclerview.widget.RecyclerView>
 
-        <com.google.android.material.button.MaterialButton
-            android:layout_width="match_parent"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="55dp"
-            android:text="ORDER"
-            android:id="@+id/bottomsheet_btn_order"
+        <TextView
+            android:id="@+id/bottomsheet_empty_view"
+            android:text="Belum ada produk dipilih"
+            android:layout_centerInParent="true"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
-    </LinearLayout>
+    </RelativeLayout>
 
 
 </androidx.core.widget.NestedScrollView>

@@ -2,6 +2,8 @@ package com.ydhnwb.justice.utils
 
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
+import com.ydhnwb.justice.models.Topping
+import java.lang.StringBuilder
 import java.text.NumberFormat
 import java.util.*
 
@@ -57,6 +59,14 @@ class JusticeUtils {
             val localeID = Locale("in", "ID")
             val formatRupiah: NumberFormat = NumberFormat.getCurrencyInstance(localeID)
             return formatRupiah.format(num)
+        }
+
+        fun getSelectedToppingName(topppings : List<Topping>) : String{
+            var topping = StringBuilder()
+            for(t in topppings){
+                topping.append(" ${t.name},")
+            }
+            return topping.toString()
         }
     }
 }

@@ -25,6 +25,7 @@ class ProductViewModel : ViewModel(){
     private var betaSelectedProducts = MutableLiveData<List<Product>>()
     private var hasFetched = MutableLiveData<Boolean>().apply { value = false }
 
+    //init
 
     fun fetchAllProduct(){
         try{
@@ -67,6 +68,12 @@ class ProductViewModel : ViewModel(){
         selectedProducts.value = selected
     }
 
+    fun betaDeleteSelectedProduct(pos : Int) {
+        val products = if(betaSelectedProducts.value == null){ mutableListOf() } else { betaSelectedProducts.value as MutableList<Product> }
+        products.removeAt(pos)
+        betaSelectedProducts.value = products
+    }
+
     fun betaAddSelectedProduct(product: Product){
        val _selectedProducts = if(betaSelectedProducts.value == null){
            mutableListOf()
@@ -74,8 +81,7 @@ class ProductViewModel : ViewModel(){
            betaSelectedProducts.value as MutableList<Product>
        }
         _selectedProducts.add(product)
-        println(product.selectedToppings)
-        betaSelectedProducts.postValue(_selectedProducts)
+        betaSelectedProducts.value = _selectedProducts
     }
 
     fun fetchAllCategory(){
