@@ -2,6 +2,7 @@ package com.ydhnwb.justice
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Parcelable
 import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
@@ -25,6 +26,7 @@ import com.ydhnwb.justice.viewmodels.ProductViewModel
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.bottomsheet_detail_order.*
 import kotlinx.android.synthetic.main.content_main.*
+import java.util.ArrayList
 
 class MainActivity : AppCompatActivity() {
     private lateinit var productViewModel: ProductViewModel
@@ -81,6 +83,11 @@ class MainActivity : AppCompatActivity() {
                 if(adapter is DetailOrderAdapter){
                     adapter.updateList(it)
                 }
+            }
+            if(it.isEmpty()){
+                bottomsheet_empty_view.visibility = View.VISIBLE
+            }else{
+                bottomsheet_empty_view.visibility = View.GONE
             }
         })
 
@@ -163,6 +170,18 @@ class MainActivity : AppCompatActivity() {
         rv_detail_order.apply {
             layoutManager = LinearLayoutManager(this@MainActivity)
             adapter = DetailOrderAdapter(mutableListOf(), this@MainActivity, productViewModel)
+        }
+        btn_checkout.setOnClickListener {
+//            startActivity(Intent(this@MainActivity, CheckoutActivity::class.java).apply {
+//                val orders : List<Product>? = productViewModel.betaListenSelectedProducts().value
+//                if(orders != null){
+//                    putParcelableArrayListExtra("order", orders as ArrayList<out Parcelable>)
+//                }else{
+//                    toast("Belum ada produk yang dipilih")
+//                }
+//            })
+
+            toast("CHECKOUT")
         }
         bottomSheet = BottomSheetBehavior.from(bottomsheet_detail_order)
         bottomSheet.state = BottomSheetBehavior.STATE_HIDDEN
