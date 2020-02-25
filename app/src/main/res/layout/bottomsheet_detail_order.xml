@@ -28,6 +28,7 @@
         <com.google.android.material.button.MaterialButton
             android:layout_width="match_parent"
             android:layout_marginTop="16dp"
+            android:layout_marginBottom="55dp"
             android:text="ORDER"
             android:id="@+id/bottomsheet_btn_order"
             android:layout_height="wrap_content"/>
