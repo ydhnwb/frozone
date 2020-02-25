@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/bottomsheet_detail_order"
+    android:elevation="0dp"
+    android:background="#FFF"
+    android:clickable="true"
+    app:behavior_peekHeight="0dp"
+    app:behavior_hideable="true"
+    app:layout_behavior="@string/bottom_sheet_behavior"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_marginTop="8dp"
+            android:id="@+id/rv_detail_order"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        </androidx.recyclerview.widget.RecyclerView>
+
+        <com.google.android.material.button.MaterialButton
+            android:layout_width="match_parent"
+            android:layout_marginTop="16dp"
+            android:text="ORDER"
+            android:id="@+id/bottomsheet_btn_order"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+
+
+</androidx.core.widget.NestedScrollView>

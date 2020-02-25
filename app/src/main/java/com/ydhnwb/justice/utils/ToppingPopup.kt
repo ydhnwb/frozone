@@ -1,8 +1,5 @@
 package com.ydhnwb.justice.utils
 
-import android.app.AlertDialog
-import android.app.Dialog
-import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -23,11 +20,10 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.util.Locale.filter
-
 
 class ToppingPopup : DialogFragment(){
     private lateinit var productViewModel: ProductViewModel
+    private var availableTopping = mutableListOf<Topping>()
 
     companion object {
         fun instance(product: Product) : ToppingPopup{
@@ -39,19 +35,18 @@ class ToppingPopup : DialogFragment(){
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.popup_topping, container)
-    }
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? = inflater.inflate(R.layout.popup_topping, container)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val product : Product = arguments?.getParcelable("product")!!
         productViewModel = ViewModelProvider(activity!!).get(ProductViewModel::class.java)
         view.rv_popup_topping.apply {
             layoutManager = LinearLayoutManager(activity)
             adapter = ToppingAdapter(mutableListOf(), activity!!)
         }
         productViewModel.listenAllTopping().observe(viewLifecycleOwner, Observer {
-            CoroutineScope(Dispatchers.Default).launch{3
+            CoroutineScope(Dispatchers.Default).launch{
                 filterTopping(it)
             }
         })
@@ -61,19 +56,24 @@ class ToppingPopup : DialogFragment(){
                     if(it.state){
                         view.loading_popup.visibility = View.VISIBLE
                         view.rv_popup_topping.visibility = View.GONE
+                        view.btn_submit_popup_topping.isEnabled = false
                     }else{
                         view.rv_popup_topping.visibility = View.VISIBLE
                         view.loading_popup.visibility = View.GONE
+                        view.btn_submit_popup_topping.isEnabled = true
                     }
                 }
                 is ToppingPopupState.ShowToast -> Toast.makeText(activity, it.message, Toast.LENGTH_LONG).show()
             }
         })
         productViewModel.fetchAllTopping()
-
-
         view.btn_submit_popup_topping.setOnClickListener {
-            println("Dismissing... submitting")
+            val selectedTopping = availableTopping.filter { topping ->
+                topping.isChecked
+            }
+            product.selectedToppings = selectedTopping.toMutableList()
+            productViewModel.betaAddSelectedProduct(product)
+            println(product)
             this.dismiss()
         }
     }
@@ -85,10 +85,10 @@ class ToppingPopup : DialogFragment(){
 
     private suspend fun filterTopping(it : List<Topping>){
         val product : Product = arguments?.getParcelable("product")!!
-        val availableToppings = it.filter { topping ->
+        availableTopping = it.filter { topping ->
             topping.category.equals(product.category)
         }.toMutableList()
-        attachToRecycler(availableToppings)
+        attachToRecycler(availableTopping)
     }
 
     private suspend fun attachToRecycler(filteredToppings : MutableList<Topping>){

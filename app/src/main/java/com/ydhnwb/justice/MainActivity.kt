@@ -9,21 +9,27 @@ import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.mancj.materialsearchbar.MaterialSearchBar
 import com.ydhnwb.justice.activities.IntroActivity
 import com.ydhnwb.justice.activities.PromptPinActivity
+import com.ydhnwb.justice.adapters.DetailOrderAdapter
 import com.ydhnwb.justice.fragments.BookmenuFragment
 import com.ydhnwb.justice.models.Category
+import com.ydhnwb.justice.models.Product
 import com.ydhnwb.justice.utils.CustomFragmentPagerAdapter
 import com.ydhnwb.justice.utils.JusticeUtils
 import com.ydhnwb.justice.viewmodels.ProductState
 import com.ydhnwb.justice.viewmodels.ProductViewModel
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.bottomsheet_detail_order.*
 import kotlinx.android.synthetic.main.content_main.*
 
 class MainActivity : AppCompatActivity() {
     private lateinit var productViewModel: ProductViewModel
     private lateinit var fragmentAdapter : CustomFragmentPagerAdapter
+    private lateinit var bottomSheet : BottomSheetBehavior<*>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,18 +46,42 @@ class MainActivity : AppCompatActivity() {
                 })}
             }
         }).start()
-
         productViewModel = ViewModelProvider(this).get(ProductViewModel::class.java)
+        setupUIComponent()
         //when we observe category, then we need to create a new tab layout instance.
         //it is bad. So i put hasfetched variable
         //if the tab is already exists, keep the current page, if not, then create it
         if(productViewModel.listenHasFetched().value == false){ productViewModel.fetchAllCategory() }
         productViewModel.listenState().observe(this, Observer { handleUIState(it) })
-        productViewModel.listenSelectedProduct().observe(this, Observer {
-            val totalQuantity: Int = it.map { h->  h.value }.sum()
-            val totalPrice : Int = it.map { h -> h.key.price!!*h.value }.sum()
+//        productViewModel.listenSelectedProduct().observe(this, Observer {
+//            val totalQuantity: Int = it.map { h->  h.value }.sum()
+//            val totalPrice : Int = it.map { h -> h.key.price!!*h.value }.sum()
+//            tv_item_indicator.text = "$totalQuantity items"
+//            tv_total_price.text = "Rp.$totalPrice"
+//        })
+        productViewModel.betaListenSelectedProducts().observe(this, Observer{
+            val totalQuantity : Int = it.size
+            val totalPrice : Int = if (it.isEmpty()){ 0
+            }else{
+                it.sumBy {p ->
+                    var totalPriceTemp : Int = p.price!!
+                    if(p.selectedToppings.isNotEmpty()){
+                        var toppingPrice = 0
+                        for(t in p.selectedToppings){
+                            toppingPrice += t.price!!
+                        }
+                        totalPriceTemp += toppingPrice
+                    }
+                    totalPriceTemp
+                }
+            }
             tv_item_indicator.text = "$totalQuantity items"
-            tv_total_price.text = "Rp.$totalPrice"
+            tv_total_price.text = JusticeUtils.setToIDR(totalPrice)
+            rv_detail_order.adapter?.let { adapter ->
+                if(adapter is DetailOrderAdapter){
+                    adapter.updateList(it)
+                }
+            }
         })
 
         productViewModel.listenAllCategory().observe(this, Observer {
@@ -127,5 +157,21 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         })
+    }
+
+    private fun setupUIComponent(){
+        rv_detail_order.apply {
+            layoutManager = LinearLayoutManager(this@MainActivity)
+            adapter = DetailOrderAdapter(mutableListOf(), this@MainActivity, productViewModel)
+        }
+        bottomSheet = BottomSheetBehavior.from(bottomsheet_detail_order)
+        bottomSheet.state = BottomSheetBehavior.STATE_HIDDEN
+        detail.setOnClickListener {
+            if(bottomSheet.state == BottomSheetBehavior.STATE_COLLAPSED || bottomSheet.state == BottomSheetBehavior.STATE_HIDDEN){
+                bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED
+            }else{
+                bottomSheet.state = BottomSheetBehavior.STATE_HIDDEN
+            }
+        }
     }
 }

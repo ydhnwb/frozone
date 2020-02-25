@@ -68,9 +68,14 @@ class ProductViewModel : ViewModel(){
     }
 
     fun betaAddSelectedProduct(product: Product){
-        with(betaSelectedProducts.value as MutableList){
-            add(product)
-        }
+       val _selectedProducts = if(betaSelectedProducts.value == null){
+           mutableListOf()
+       } else {
+           betaSelectedProducts.value as MutableList<Product>
+       }
+        _selectedProducts.add(product)
+        println(product.selectedToppings)
+        betaSelectedProducts.postValue(_selectedProducts)
     }
 
     fun fetchAllCategory(){

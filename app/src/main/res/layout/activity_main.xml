@@ -61,6 +61,7 @@
     </LinearLayout>
 
 
+    <include layout="@layout/bottomsheet_detail_order"/>
 
     <androidx.cardview.widget.CardView
         android:layout_gravity="bottom"
@@ -117,6 +118,7 @@
                 android:contentDescription="Checkout" />
 
         </LinearLayout>
+
 
     </androidx.cardview.widget.CardView>
 
