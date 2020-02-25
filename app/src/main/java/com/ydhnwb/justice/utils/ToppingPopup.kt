@@ -40,6 +40,14 @@ class ToppingPopup : DialogFragment(){
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val product : Product = arguments?.getParcelable("product")!!
+        val p = Product().apply {
+            id = product.id
+            name = product.name
+            category = product.category
+            image = product.image
+            price = product.price
+            description = product.description
+        }
         productViewModel = ViewModelProvider(activity!!).get(ProductViewModel::class.java)
         view.rv_popup_topping.apply {
             layoutManager = LinearLayoutManager(activity)
@@ -68,12 +76,14 @@ class ToppingPopup : DialogFragment(){
         })
         productViewModel.fetchAllTopping()
         view.btn_submit_popup_topping.setOnClickListener {
-            val selectedTopping = availableTopping.filter { topping ->
-                topping.isChecked
-            }
-            product.selectedToppings = selectedTopping.toMutableList()
-            productViewModel.betaAddSelectedProduct(product)
-            println(product)
+            val selectedTopping = availableTopping.filter { topping -> topping.isChecked }
+            p.selectedToppings = selectedTopping.toMutableList()
+            productViewModel.betaAddSelectedProduct(p)
+            this.dismiss()
+        }
+
+        view.no_topping.setOnClickListener {
+            productViewModel.betaAddSelectedProduct(p)
             this.dismiss()
         }
     }

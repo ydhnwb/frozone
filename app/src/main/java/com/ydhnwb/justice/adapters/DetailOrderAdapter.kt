@@ -24,25 +24,23 @@ class DetailOrderAdapter (private var selectedProducts : MutableList<Product>, p
 
     override fun getItemCount() = selectedProducts.size
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) =holder.bind(selectedProducts[position], context, productViewModel, position)
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) = holder.bind(selectedProducts[position], context, productViewModel, position)
 
     class ViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView){
-        fun bind(product: Product, context: Context, productViewModel: ProductViewModel, position: Int){
-            var totalPrice : Int = product.price!!
+        fun bind(product: Product, context: Context, productViewModel: ProductViewModel, pos : Int){
+            var totalPrice = product.price!!
             itemView.detail_order_name.text = product.name
-            product.selectedToppings.isNotEmpty().let {
-                val desc = StringBuilder()
-                for(t in product.selectedToppings){
-                    desc.append(" ${t.name},")
-                    println(t.name)
-                    totalPrice += t.price!!
+            product.selectedToppings.isNotEmpty().let{
+                if(it){
+                    val toppingPrice = product.selectedToppings.sumBy { t -> t.price!! }
+                    totalPrice += toppingPrice
+                    itemView.detail_order_more.text = "toppings: ${product.selectedToppings.joinToString { t -> t.name.toString() }}"
+                }else{
+                    itemView.detail_order_more.text = "No topping"
                 }
-                itemView.detail_order_more.text = "toppings :$desc"
             }
             itemView.detail_order_price.text = JusticeUtils.setToIDR(totalPrice)
-            itemView.detail_order_delete_product.setOnClickListener {
-                productViewModel.betaDeleteSelectedProduct(product, position)
-            }
+            itemView.detail_order_delete_product.setOnClickListener { productViewModel.betaDeleteSelectedProduct(pos) }
         }
     }
 }

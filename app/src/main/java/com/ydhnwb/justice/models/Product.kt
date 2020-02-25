@@ -6,15 +6,11 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class Product (
-    @SerializedName("id") var id : Int?,
-    @SerializedName("name") var name : String?,
-    @SerializedName("category") var category : String?,
-    @SerializedName("price") var price : Int?,
-    @SerializedName("image") var image : String?,
-    @SerializedName("description") var description : String?,
+    @SerializedName("id") var id : Int? = 0,
+    @SerializedName("name") var name : String? = null,
+    @SerializedName("category") var category : String? = null,
+    @SerializedName("price") var price : Int? = 0,
+    @SerializedName("image") var image : String?= null,
+    @SerializedName("description") var description : String?= null,
     var selectedToppings : MutableList<Topping> = mutableListOf()
-)
-    : Parcelable
-{
-    constructor() : this(null, null, null, null, null, null)
-}
+): Parcelable

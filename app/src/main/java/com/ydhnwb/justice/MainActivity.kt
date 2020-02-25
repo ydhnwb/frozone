@@ -2,7 +2,6 @@ package com.ydhnwb.justice
 
 import android.content.Intent
 import android.os.Bundle
-import android.os.Parcelable
 import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
@@ -26,7 +25,6 @@ import com.ydhnwb.justice.viewmodels.ProductViewModel
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.bottomsheet_detail_order.*
 import kotlinx.android.synthetic.main.content_main.*
-import java.util.ArrayList
 
 class MainActivity : AppCompatActivity() {
     private lateinit var productViewModel: ProductViewModel
@@ -38,9 +36,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
         supportActionBar?.hide()
-        //checking, if this app is first opened by the user
-        //if yes, Intent to IntroActivity
-        //if no, then still in this page
+
         Thread(Runnable {
             if (JusticeUtils.isFirstTime(this@MainActivity)) {
                 runOnUiThread { startActivity(Intent(this@MainActivity, IntroActivity::class.java).also {
@@ -50,9 +46,7 @@ class MainActivity : AppCompatActivity() {
         }).start()
         productViewModel = ViewModelProvider(this).get(ProductViewModel::class.java)
         setupUIComponent()
-        //when we observe category, then we need to create a new tab layout instance.
-        //it is bad. So i put hasfetched variable
-        //if the tab is already exists, keep the current page, if not, then create it
+
         if(productViewModel.listenHasFetched().value == false){ productViewModel.fetchAllCategory() }
         productViewModel.listenState().observe(this, Observer { handleUIState(it) })
 //        productViewModel.listenSelectedProduct().observe(this, Observer {
@@ -62,6 +56,13 @@ class MainActivity : AppCompatActivity() {
 //            tv_total_price.text = "Rp.$totalPrice"
 //        })
         productViewModel.betaListenSelectedProducts().observe(this, Observer{
+            for(p in it){
+                println(p.name)
+//                println("Hehe -> "+p.toppingsName)
+                for (t in p.selectedToppings){
+                    println(t.name)
+                }
+            }
             val totalQuantity : Int = it.size
             val totalPrice : Int = if (it.isEmpty()){ 0
             }else{
@@ -79,16 +80,12 @@ class MainActivity : AppCompatActivity() {
             }
             tv_item_indicator.text = "$totalQuantity items"
             tv_total_price.text = JusticeUtils.setToIDR(totalPrice)
-            rv_detail_order.adapter?.let { adapter ->
+            rv_detail_order.adapter?.let {adapter ->
                 if(adapter is DetailOrderAdapter){
                     adapter.updateList(it)
                 }
             }
-            if(it.isEmpty()){
-                bottomsheet_empty_view.visibility = View.VISIBLE
-            }else{
-                bottomsheet_empty_view.visibility = View.GONE
-            }
+            if(it.isEmpty()){ bottomsheet_empty_view.visibility = View.VISIBLE }else{ bottomsheet_empty_view.visibility = View.GONE }
         })
 
         productViewModel.listenAllCategory().observe(this, Observer {

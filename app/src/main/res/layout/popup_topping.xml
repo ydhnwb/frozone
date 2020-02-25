@@ -37,6 +37,7 @@
 
 
             <LinearLayout
+                android:id="@+id/no_topping"
                 android:background="?attr/selectableItemBackground"
                 android:gravity="center_vertical"
                 android:padding="16dp"
