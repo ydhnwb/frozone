@@ -3,13 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     app:cardCornerRadius="8dp"
-    app:strokeWidth="1dp"
+    android:background="@color/colorCards"
     android:layout_margin="4dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
     <LinearLayout
-        android:background="?attr/selectableItemBackground"
+        android:background="@color/colorCards"
         android:padding="16dp"
         android:orientation="vertical"
         android:layout_width="match_parent"
@@ -19,7 +19,7 @@
             android:id="@+id/detail_order_name"
             android:textSize="18sp"
             android:textStyle="bold"
-            android:textColor="#000"
+            android:textColor="@color/white"
             android:text="Lorem ipsum"
             android:maxLines="2"
             android:layout_width="match_parent"
@@ -29,13 +29,14 @@
             android:id="@+id/detail_order_more"
             android:text="With topping 1, topping 2"
             android:layout_width="match_parent"
+            android:textColor="@color/white"
             android:layout_height="wrap_content"/>
         <TextView
             android:layout_marginTop="16dp"
             android:id="@+id/detail_order_price"
             android:textSize="18sp"
             android:textStyle="bold"
-            android:textColor="#4CAF50"
+            android:textColor="@color/white"
             android:text="Lorem ipsum"
             android:maxLines="1"
             android:layout_width="match_parent"
@@ -48,6 +49,7 @@
             android:id="@+id/detail_order_delete_product"
             android:textAllCaps="false"
             android:textColor="#F44336"
+            app:strokeColor="@color/colorWhite"
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_height="wrap_content"/>
 

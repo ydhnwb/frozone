@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
+    android:background="@color/colorBackground"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -15,7 +16,7 @@
 
         <RelativeLayout
             android:padding="16dp"
-            android:background="@color/colorAccent"
+            android:background="@color/colorCards"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -38,7 +39,7 @@
 
             <LinearLayout
                 android:id="@+id/no_topping"
-                android:background="?attr/selectableItemBackground"
+                android:background="@color/colorPrimary"
                 android:gravity="center_vertical"
                 android:padding="16dp"
                 android:orientation="horizontal"
@@ -67,6 +68,7 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_popup_topping"
+
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
 

@@ -4,11 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorBackground"
     tools:context=".MainActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
         android:theme="@style/AppTheme.AppBarOverlay">
 
         <androidx.appcompat.widget.Toolbar
@@ -22,6 +24,7 @@
 
 
     <LinearLayout
+        android:background="@color/colorBackground"
         android:layout_marginTop="8dp"
         android:layout_gravity="top"
         android:orientation="vertical"
@@ -33,22 +36,29 @@
             app:mt_hint="Cari..."
             android:elevation="2dp"
             app:mt_maxSuggestionsCount="5"
-            app:mt_menuIconDrawable="@drawable/ic_search_black_24dp"
+            app:mt_searchIconTint="@color/white"
+            app:mt_hintColor="@color/white"
+            app:mt_backIconTint="@color/white"
+            app:mt_menuIconTint="@color/white"
+            app:mt_searchBarColor="@color/colorBackground"
+            app:mt_menuIconDrawable="@drawable/ic_search_white_24dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/search_bar" />
 
         <com.google.android.material.tabs.TabLayout
             android:layout_gravity="top"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="5dp"
             android:elevation="16dp"
             android:background="@null"
             android:id="@+id/tabLayout"
             android:layout_width="match_parent"
             android:layout_height="36dp"
             app:tabMode="scrollable"
-            app:tabTextColor="#505050"
+            app:tabTextColor="@color/colorWhite"
             app:tabBackground="@drawable/tab_layout_selector"
-            app:tabSelectedTextColor="@color/colorPrimaryDark"
+            app:tabSelectedTextColor="@color/colorBackground"
             app:tabPaddingStart="16dp"
             app:tabPaddingEnd="16dp"
             app:tabIndicatorHeight="0dp"
@@ -79,7 +89,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-
             <LinearLayout
                 android:clickable="true"
                 android:id="@+id/detail"
@@ -105,8 +114,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
             </LinearLayout>
-
-
 
             <ImageButton
                 android:id="@+id/btn_checkout"

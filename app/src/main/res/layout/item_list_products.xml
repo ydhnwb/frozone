@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView
     android:layout_margin="8dp"
+    app:cardElevation="5dp"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:background="?attr/selectableItemBackground"
-    android:layout_height="wrap_content">
+    android:background="@color/colorCards"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <LinearLayout
+        android:background="@color/colorCards"
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -33,7 +36,7 @@
             android:id="@+id/product_name"
             android:layout_marginTop="16dp"
             android:textStyle="bold"
-            android:textColor="#333333"
+            android:textColor="@color/colorWhite"
             android:text="Lorem ipsum dolor"
             android:maxLines="3"
             android:layout_width="wrap_content"
@@ -43,14 +46,12 @@
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
             android:text="Rp.0"
+            android:textColor="@color/colorWhite"
             android:maxLines="1"
             android:layout_marginBottom="16dp"
             android:id="@+id/product_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
     </LinearLayout>
-
-
-
 
 </com.google.android.material.card.MaterialCardView>
