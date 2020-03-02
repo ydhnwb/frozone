@@ -40,6 +40,8 @@ class IntroActivity : AppIntro2() {
         super.onDonePressed(currentFragment)
         JusticeUtils.setFirstTime(this@IntroActivity, false).also {
             JusticeUtils.setDefaultPin(this@IntroActivity)
+            JusticeUtils.setBranch(this, 0)
+            JusticeUtils.setBranchName(this, null)
             startActivity(Intent(this@IntroActivity, MainActivity::class.java))
             finish()
         }

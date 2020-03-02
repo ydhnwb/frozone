@@ -42,6 +42,32 @@ class JusticeUtils {
             }
         }
 
+        fun setBranch(context : Context, branchId : Int){
+            val pref = context.getSharedPreferences("UTILS", MODE_PRIVATE)
+            pref.edit().apply(){
+                putInt("BRANCH", branchId)
+                apply()
+            }
+        }
+
+        fun setBranchName(context : Context, branchName : String?){
+            val pref = context.getSharedPreferences("UTILS", MODE_PRIVATE)
+            pref.edit().apply(){
+                putString("BRANCH_NAME", branchName)
+                apply()
+            }
+        }
+
+        fun getCurrentBranch(context: Context) : Int{
+            val pref = context.getSharedPreferences("UTILS", MODE_PRIVATE)
+            return pref.getInt("BRANCH", 0)
+        }
+
+        fun getCurrentBranchName(context: Context) : String?{
+            val pref = context.getSharedPreferences("UTILS", MODE_PRIVATE)
+            return pref.getString("BRANCH_NAME", null)
+        }
+
         fun setDefaultPin(context: Context){
             val pref = context.getSharedPreferences("UTILS", MODE_PRIVATE)
             pref.edit().apply{

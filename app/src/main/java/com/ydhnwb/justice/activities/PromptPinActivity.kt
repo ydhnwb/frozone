@@ -1,5 +1,6 @@
 package com.ydhnwb.justice.activities
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
@@ -18,7 +19,8 @@ class PromptPinActivity : AppCompatActivity() {
             if(pinEntered.length == 4){
                 val currentPIN = JusticeUtils.getPin(this@PromptPinActivity)
                 if(currentPIN.equals(pinEntered)){
-                    Toast.makeText(this@PromptPinActivity, "OK", Toast.LENGTH_LONG).show()
+                    startActivity(Intent(this, SettingActivity::class.java))
+                    finish()
                 }else{
                     Toast.makeText(this@PromptPinActivity, "NOT OK", Toast.LENGTH_LONG).show()
                 }

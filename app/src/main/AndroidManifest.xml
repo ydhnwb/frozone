@@ -17,9 +17,13 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".activities.SettingActivity"
+            android:label="@string/title_activity_setting"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
             android:name=".CheckoutActivity"
             android:label="@string/title_activity_checkout"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".activities.PromptPinActivity" />
         <activity
             android:name=".MainActivity"

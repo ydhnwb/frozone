@@ -40,7 +40,7 @@ class ProductAdapter (private var products : MutableList<Product>, private var c
             }
             itemView.product_price.text = JusticeUtils.setToIDR(product.price!!)
             itemView.setOnClickListener {
-                productViewModel.addSelectedProduct(product)
+//                productViewModel.addSelectedProduct(product)
                 val p : Product = product
                 val fragmentManager = context as AppCompatActivity
                 ToppingPopup.instance(p).show(fragmentManager.supportFragmentManager, "topping_popup")

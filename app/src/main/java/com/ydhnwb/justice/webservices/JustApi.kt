@@ -1,6 +1,7 @@
 package com.ydhnwb.justice.webservices
 
 import com.google.gson.annotations.SerializedName
+import com.ydhnwb.justice.models.Branch
 import com.ydhnwb.justice.models.Category
 import com.ydhnwb.justice.models.Product
 import com.ydhnwb.justice.models.Topping
@@ -48,6 +49,9 @@ interface JusticeAPIService{
 
     @GET("api/product/search/{query}")
     fun searchProduct(@Path("query") query : String) : Call<WrappedListResponse<Product>>
+
+    @GET("api/branch")
+    fun getAllBranch() : Call<WrappedListResponse<Branch>>
 }
 
 data class WrappedResponse<T>(
