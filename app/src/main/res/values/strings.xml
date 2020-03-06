@@ -3,4 +3,12 @@
     <string name="action_settings">Settings</string>
     <string name="title_activity_checkout">Checkout</string>
     <string name="title_activity_setting">Setting</string>
+    <string name="configure_app">Belum ada cabang yang dipilih di dalam aplikasi ini. Konfigurasikan lewat pengaturan aplikasi ini.</string>
+    <string name="info_success_order">Pesanan berhasil dibuat.</string>
+    <string name="info_before_order">Buat pesanan sekarang juga?</string>
+    <string name="info_loading">Tunggu sebentar....</string>
+    <string name="info_understand">Mengerti</string>
+    <string name="info_cancel">Batal</string>
+    <string name="info_search_result">Hasil pencarian</string>
+    <string name="info_please_choose_product_first">Mohon untuk pilih produk terlebih dahulu</string>
 </resources>

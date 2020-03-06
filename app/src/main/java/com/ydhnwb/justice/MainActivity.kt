@@ -7,6 +7,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -17,7 +18,7 @@ import com.ydhnwb.justice.activities.PromptPinActivity
 import com.ydhnwb.justice.adapters.DetailOrderAdapter
 import com.ydhnwb.justice.fragments.BookmenuFragment
 import com.ydhnwb.justice.models.Category
-import com.ydhnwb.justice.models.Product
+import com.ydhnwb.justice.models.Order
 import com.ydhnwb.justice.utils.CustomFragmentPagerAdapter
 import com.ydhnwb.justice.utils.JusticeUtils
 import com.ydhnwb.justice.viewmodels.ProductState
@@ -36,7 +37,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
         supportActionBar?.hide()
-
         Thread(Runnable {
             if (JusticeUtils.isFirstTime(this@MainActivity)) {
                 runOnUiThread { startActivity(Intent(this@MainActivity, IntroActivity::class.java).also {
@@ -49,20 +49,7 @@ class MainActivity : AppCompatActivity() {
 
         if(productViewModel.listenHasFetched().value == false){ productViewModel.fetchAllCategory() }
         productViewModel.listenState().observe(this, Observer { handleUIState(it) })
-//        productViewModel.listenSelectedProduct().observe(this, Observer {
-//            val totalQuantity: Int = it.map { h->  h.value }.sum()
-//            val totalPrice : Int = it.map { h -> h.key.price!!*h.value }.sum()
-//            tv_item_indicator.text = "$totalQuantity items"
-//            tv_total_price.text = "Rp.$totalPrice"
-//        })
         productViewModel.betaListenSelectedProducts().observe(this, Observer{
-            for(p in it){
-                println(p.name)
-//                println("Hehe -> "+p.toppingsName)
-                for (t in p.selectedToppings){
-                    println(t.name)
-                }
-            }
             val totalQuantity : Int = it.size
             val totalPrice : Int = if (it.isEmpty()){ 0
             }else{
@@ -92,6 +79,24 @@ class MainActivity : AppCompatActivity() {
             setupTab(it)
         })
         setupSearchBar()
+        btn_checkout.setOnClickListener {
+            productViewModel.betaListenSelectedProducts().value?.let{
+                if(it.isNotEmpty()){
+                    val selectedProducts = productViewModel.betaListenSelectedProducts().value
+                    selectedProducts?.let {products ->
+                        val branch = JusticeUtils.getCurrentBranch(this)
+                        if(branch == 0){
+                            showAlert(resources.getString(R.string.configure_app))
+                        }else{
+                            val order = Order(branch, products = products)
+                            showBeforeOrder(order)
+                        }
+                    }
+                }else{
+                    toast(resources.getString(R.string.info_please_choose_product_first))
+                }
+            } ?: run { toast(resources.getString(R.string.info_please_choose_product_first)) }
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -110,21 +115,23 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun toast(mess : String?) = Toast.makeText(this, mess, Toast.LENGTH_LONG).show()
-    private fun isLoading(state : Boolean){
-        if(state){ loading.visibility = View.VISIBLE }else{ loading.visibility = View.GONE }
-    }
+    private fun isLoading(state : Boolean){ if(state){ loading.visibility = View.VISIBLE }else{ loading.visibility = View.GONE } }
     private fun handleUIState(it : ProductState){
         when(it){
             is ProductState.ShowToast -> toast(it.message)
             is ProductState.IsLoading -> isLoading(it.state)
+            is ProductState.ShowAlert -> showAlert(it.message)
+            is ProductState.SuccessOrder -> {
+                showAlert(resources.getString(R.string.info_success_order))
+                productViewModel.clearSelectedProduct()
+            }
         }
     }
 
-    //creating a tabs based on category we retrieve from api
     private fun setupTab(categories : List<Category>){
         fragmentAdapter = CustomFragmentPagerAdapter(supportFragmentManager)
         for (c in categories){ fragmentAdapter.addFragment(BookmenuFragment.instance(c), c.name.toString()) }
-        fragmentAdapter.addFragment(BookmenuFragment.instance(null), "Hasil Pencarian")
+        fragmentAdapter.addFragment(BookmenuFragment.instance(null), resources.getString(R.string.info_search_result))
         viewPager.adapter = fragmentAdapter
         tabLayout.setupWithViewPager(viewPager)
     }
@@ -168,18 +175,6 @@ class MainActivity : AppCompatActivity() {
             layoutManager = LinearLayoutManager(this@MainActivity)
             adapter = DetailOrderAdapter(mutableListOf(), this@MainActivity, productViewModel)
         }
-        btn_checkout.setOnClickListener {
-//            startActivity(Intent(this@MainActivity, CheckoutActivity::class.java).apply {
-//                val orders : List<Product>? = productViewModel.betaListenSelectedProducts().value
-//                if(orders != null){
-//                    putParcelableArrayListExtra("order", orders as ArrayList<out Parcelable>)
-//                }else{
-//                    toast("Belum ada produk yang dipilih")
-//                }
-//            })
-
-            toast("CHECKOUT")
-        }
         bottomSheet = BottomSheetBehavior.from(bottomsheet_detail_order)
         bottomSheet.state = BottomSheetBehavior.STATE_HIDDEN
         detail.setOnClickListener {
@@ -189,6 +184,33 @@ class MainActivity : AppCompatActivity() {
                 bottomSheet.state = BottomSheetBehavior.STATE_HIDDEN
             }
         }
+    }
+
+    private fun showAlert(message : String){
+        val alertDialog = AlertDialog.Builder(this).apply {
+            setMessage(message)
+            setPositiveButton(resources.getString(R.string.info_understand)) { dialog, _ ->
+                dialog.dismiss()
+            }
+            create()
+        }
+        alertDialog.show()
+    }
+
+    private fun showBeforeOrder(order: Order){
+        val alertDialog = AlertDialog.Builder(this).apply {
+            setMessage(resources.getString(R.string.info_before_order))
+            setPositiveButton(resources.getString(R.string.info_understand)) { dialog, which ->
+                productViewModel.createOrder(order)
+                dialog.dismiss()
+                toast(resources.getString(R.string.info_loading))
+            }
+            setNegativeButton(resources.getString(R.string.info_cancel)){dialog, _ ->
+                dialog.dismiss()
+            }
+            create()
+        }
+        alertDialog.show()
     }
 
     override fun onBackPressed() {

@@ -1,17 +1,13 @@
 package com.ydhnwb.justice.webservices
 
 import com.google.gson.annotations.SerializedName
-import com.ydhnwb.justice.models.Branch
-import com.ydhnwb.justice.models.Category
-import com.ydhnwb.justice.models.Product
-import com.ydhnwb.justice.models.Topping
+import com.ydhnwb.justice.models.*
 import com.ydhnwb.justice.utils.JusticeUtils
 import okhttp3.OkHttpClient
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.http.GET
-import retrofit2.http.Path
+import retrofit2.http.*
 import java.util.concurrent.TimeUnit
 
 class JustApi {
@@ -52,14 +48,18 @@ interface JusticeAPIService{
 
     @GET("api/branch")
     fun getAllBranch() : Call<WrappedListResponse<Branch>>
+
+    @Headers("Content-Type: application/json")
+    @POST("api/order")
+    fun createOrder(@Body order : String) : Call<WrappedResponse<Order>>
 }
 
 data class WrappedResponse<T>(
     @SerializedName("message") var message : String?,
-    @SerializedName("status") var status : String?,
+    @SerializedName("status") var status : Boolean,
     @SerializedName("data") var data : T?
 ){
-    constructor(): this(null, null, null )
+    constructor(): this(null, false, null )
 }
 
 data class WrappedListResponse<T>(

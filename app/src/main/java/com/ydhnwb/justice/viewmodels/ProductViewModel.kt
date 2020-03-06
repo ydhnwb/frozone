@@ -2,12 +2,15 @@ package com.ydhnwb.justice.viewmodels
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.google.gson.Gson
 import com.ydhnwb.justice.models.Category
+import com.ydhnwb.justice.models.Order
 import com.ydhnwb.justice.models.Product
 import com.ydhnwb.justice.models.Topping
 import com.ydhnwb.justice.utils.SingleLiveEvent
 import com.ydhnwb.justice.webservices.JustApi
 import com.ydhnwb.justice.webservices.WrappedListResponse
+import com.ydhnwb.justice.webservices.WrappedResponse
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -15,7 +18,6 @@ import java.lang.Exception
 
 class ProductViewModel : ViewModel(){
     private var allProduct = MutableLiveData<List<Product>>()
-    private var selectedProducts = MutableLiveData<HashMap<Product, Int>>()
     private var searchResultProduct = MutableLiveData<List<Product>>()
     private var api = JustApi.instance()
     private var state : SingleLiveEvent<ProductState> = SingleLiveEvent()
@@ -55,18 +57,6 @@ class ProductViewModel : ViewModel(){
         }
     }
 
-    fun addSelectedProduct(product: Product){
-        val selected : HashMap<Product, Int> = if (selectedProducts.value != null) {selectedProducts.value!! }
-        else {HashMap()}
-        if(selected.containsKey(product)){
-            val many : Int? = selected[product]
-            many?.let { m -> selected.put(product, m+1)
-            }
-        }else{
-            selected[product] = 1
-        }
-        selectedProducts.value = selected
-    }
 
     fun betaDeleteSelectedProduct(pos : Int) {
         val products = if(betaSelectedProducts.value == null){ mutableListOf() } else { betaSelectedProducts.value as MutableList<Product> }
@@ -75,13 +65,13 @@ class ProductViewModel : ViewModel(){
     }
 
     fun betaAddSelectedProduct(product: Product){
-       val _selectedProducts = if(betaSelectedProducts.value == null){
+       val selectedProducts = if(betaSelectedProducts.value == null){
            mutableListOf()
        } else {
            betaSelectedProducts.value as MutableList<Product>
        }
-        _selectedProducts.add(product)
-        betaSelectedProducts.value = _selectedProducts
+        selectedProducts.add(product)
+        betaSelectedProducts.value = selectedProducts
     }
 
     fun fetchAllCategory(){
@@ -178,7 +168,44 @@ class ProductViewModel : ViewModel(){
         }
     }
 
-    fun listenSelectedProduct() = selectedProducts
+    fun createOrder(order: Order){
+        try{
+            state.value = ProductState.IsLoading(true)
+            val gson = Gson().toJson(order)
+            api.createOrder(gson).enqueue(object : Callback<WrappedResponse<Order>>{
+                override fun onFailure(call: Call<WrappedResponse<Order>>, t: Throwable) {
+                    println("onFailure -> ${t.message}")
+                    state.value = ProductState.IsLoading(false)
+                    state.value = ProductState.ShowToast(t.message.toString())
+                    state.value = ProductState.ShowAlert("Tidak dapat membuat pesanan.")
+
+                }
+
+                override fun onResponse(call: Call<WrappedResponse<Order>>, response: Response<WrappedResponse<Order>>) {
+                    if(response.isSuccessful){
+                        val body = response.body() as WrappedResponse<Order>
+                        if (body.status){
+                            state.value = ProductState.SuccessOrder
+                        }else{
+                            state.value = ProductState.ShowToast("Gagal membuat order")
+                        }
+                    }else{
+                        state.value = ProductState.ShowToast("Response is not successfull")
+                        state.value = ProductState.ShowAlert("Gagal saat membuat pesanan")
+                    }
+                    state.value = ProductState.IsLoading(false)
+                }
+            })
+
+        }catch (e: Exception){
+            println("Exception -> ${e.message}")
+            state.value = ProductState.IsLoading(false)
+            state.value = ProductState.ShowToast(e.message.toString())
+        }
+    }
+
+    fun clearSelectedProduct(){ betaSelectedProducts.value = mutableListOf() }
+
     fun listenAllProduct() = allProduct
     fun listenState() = state
     fun listenAllCategory() = allCategory
@@ -192,6 +219,8 @@ class ProductViewModel : ViewModel(){
 sealed class ProductState {
     data class IsLoading(var state: Boolean = false) : ProductState()
     data class ShowToast(var message : String) : ProductState()
+    data class ShowAlert(var message : String) : ProductState()
+    object SuccessOrder : ProductState()
 }
 
 sealed class ToppingPopupState{
