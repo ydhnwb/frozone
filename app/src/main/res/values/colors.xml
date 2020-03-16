@@ -6,4 +6,5 @@
     <color name="colorBackground">#252D4A</color>
     <color name="colorCards">#343D5E</color>
     <color name="colorWhite">#FFFFFF</color>
+    <color name="colorBlack">#494949</color>
 </resources>

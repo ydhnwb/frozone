@@ -35,8 +35,10 @@ class SettingActivity : AppCompatActivity() {
         setting_branch.setOnClickListener {
             BranchPopup().show(supportFragmentManager, "branch_popup")
         }
-        setting_device_name.setOnClickListener {
-            Toast.makeText(this, "OK", Toast.LENGTH_LONG).show()
+        setting_device_name.setOnClickListener {}
+        val deviceId = JusticeUtils.getDeviceId(this)
+        deviceId?.let {
+            tv_device.text = it
         }
     }
 
@@ -46,10 +48,7 @@ class SettingActivity : AppCompatActivity() {
         branchName?.let {
             tv_branch.text = it
         } ?: run {
-            tv_branch.text = "Belum ada cabang ditautkan"
+            tv_branch.text = resources.getString(R.string.info_no_branch_selected)
         }
     }
-
-
-
 }

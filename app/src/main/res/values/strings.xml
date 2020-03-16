@@ -11,4 +11,11 @@
     <string name="info_cancel">Batal</string>
     <string name="info_search_result">Hasil pencarian</string>
     <string name="info_please_choose_product_first">Mohon untuk pilih produk terlebih dahulu</string>
+    <string name="info_no_branch_selected">Belum ada cabang ditautkan</string>
+    <string name="info_no_product">Belum ada produk di sini</string>
+    <string name="info_enter_pin">Masukkan PIN untuk melanjutkan</string>
+    <string name="info_intro_1">Modern dan mudah dalam mengatur transaksi</string>
+    <string name="info_intro_2">Lebih bersih dan teratur tanpa perlu menggunakan kertas konvensiona</string>
+    <string name="info_intro_3">Mengatur cabang dan terskala dengan baik</string>
+    <string name="info_enter_pin_desc">Untuk membuka pengaturan aplikasi ini, masukkan PIN terlebih dahulu. Jika anda tidak mengetahui PIN, hubungi administrator</string>
 </resources>

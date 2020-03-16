@@ -88,7 +88,8 @@ class MainActivity : AppCompatActivity() {
                         if(branch == 0){
                             showAlert(resources.getString(R.string.configure_app))
                         }else{
-                            val order = Order(branch, products = products)
+                            val deviceId = JusticeUtils.getDeviceId(this)
+                            val order = Order(deviceId ,branch, products = products)
                             showBeforeOrder(order)
                         }
                     }
@@ -138,6 +139,9 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+        if(JusticeUtils.getCurrentBranch(this@MainActivity) == 0 && !JusticeUtils.isFirstTime(this)){
+            showAlert(resources.getString(R.string.info_no_branch_selected))
+        }
         productViewModel.fetchAllProduct()
     }
 

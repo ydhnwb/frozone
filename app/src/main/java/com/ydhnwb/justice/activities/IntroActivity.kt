@@ -10,28 +10,37 @@ import com.github.paolorotolo.appintro.model.SliderPage
 import com.ydhnwb.justice.MainActivity
 import com.ydhnwb.justice.R
 import com.ydhnwb.justice.utils.JusticeUtils
+import java.util.*
 
 class IntroActivity : AppIntro2() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         supportActionBar?.hide()
         val sliderPage = SliderPage().apply {
-            description = "Lorem ipsum dolor sit amet"
-            descColor = Color.parseColor("#ffffff")
-            imageDrawable = R.drawable.ic_search_black_24dp
-            bgColor = Color.parseColor("#1E80CE")
+            description = resources.getString(R.string.info_intro_1)
+            descColor = Color.parseColor("#494949")
+            imageDrawable = R.drawable.ic_doodle_app_development
+            bgColor = Color.parseColor("#FFFFFF")
         }
 
         val sliderPage2 = SliderPage().apply {
-            description = "Lorem ipsum dolor sit amet"
-            descColor = Color.parseColor("#ffffff")
-            imageDrawable = R.drawable.ic_search_black_24dp
-            bgColor = Color.parseColor("#1E80CE")
+            description = resources.getString(R.string.info_intro_2)
+            descColor = Color.parseColor("#494949")
+            imageDrawable = R.drawable.ic_doodle_payment_processed
+            bgColor = Color.parseColor("#FFFFFF")
+        }
+
+        val sliderPage3 = SliderPage().apply {
+            description = resources.getString(R.string.info_intro_3)
+            descColor = Color.parseColor("#494949")
+            imageDrawable = R.drawable.ic_doodle_ecommerce
+            bgColor = Color.parseColor("#FFFFFF")
         }
 
         addSlide(AppIntroFragment.newInstance(sliderPage))
         addSlide(AppIntroFragment.newInstance(sliderPage2))
-        setZoomAnimation()
+        addSlide(AppIntroFragment.newInstance(sliderPage3))
+        setFadeAnimation()
         skipButtonEnabled = false
         isVibrateOn = true
     }
@@ -39,6 +48,9 @@ class IntroActivity : AppIntro2() {
     override fun onDonePressed(currentFragment: Fragment?) {
         super.onDonePressed(currentFragment)
         JusticeUtils.setFirstTime(this@IntroActivity, false).also {
+            val generatedId = UUID.randomUUID().toString()
+            println("Device id -> $generatedId")
+            JusticeUtils.setDeviceId(generatedId, this)
             JusticeUtils.setDefaultPin(this@IntroActivity)
             JusticeUtils.setBranch(this, 0)
             JusticeUtils.setBranchName(this, null)

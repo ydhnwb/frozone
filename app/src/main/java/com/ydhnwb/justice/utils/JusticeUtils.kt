@@ -87,12 +87,17 @@ class JusticeUtils {
             return formatRupiah.format(num)
         }
 
-        fun getSelectedToppingName(topppings : List<Topping>) : String{
-            var topping = StringBuilder()
-            for(t in topppings){
-                topping.append(" ${t.name},")
+        fun setDeviceId(id : String, context: Context){
+            val pref = context.getSharedPreferences("UTILS", MODE_PRIVATE)
+            pref.edit().apply{
+                putString("DEVICE_ID", id)
+                apply()
             }
-            return topping.toString()
+        }
+
+        fun getDeviceId(context: Context) : String? {
+            val pref = context.getSharedPreferences("UTILS", MODE_PRIVATE)
+            return pref.getString("DEVICE_ID", null)
         }
     }
 }

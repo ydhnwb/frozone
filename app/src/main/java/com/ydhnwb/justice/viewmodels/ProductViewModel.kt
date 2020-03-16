@@ -172,13 +172,13 @@ class ProductViewModel : ViewModel(){
         try{
             state.value = ProductState.IsLoading(true)
             val gson = Gson().toJson(order)
+            println(gson)
             api.createOrder(gson).enqueue(object : Callback<WrappedResponse<Order>>{
                 override fun onFailure(call: Call<WrappedResponse<Order>>, t: Throwable) {
                     println("onFailure -> ${t.message}")
                     state.value = ProductState.IsLoading(false)
                     state.value = ProductState.ShowToast(t.message.toString())
                     state.value = ProductState.ShowAlert("Tidak dapat membuat pesanan.")
-
                 }
 
                 override fun onResponse(call: Call<WrappedResponse<Order>>, response: Response<WrappedResponse<Order>>) {

@@ -15,7 +15,6 @@ class SettingViewModel : ViewModel(){
     private var branches = MutableLiveData<List<Branch>>()
     private var api = JustApi.instance()
 
-
     fun fetchBranch(){
         state.value = SettingState.IsLoading(true)
         api.getAllBranch().enqueue(object : Callback<WrappedListResponse<Branch>>{
