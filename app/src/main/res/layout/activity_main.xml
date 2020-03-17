@@ -35,6 +35,7 @@
             style="@style/MaterialSearchBarLight"
             app:mt_hint="Cari..."
             android:elevation="2dp"
+            app:mt_textColor="@color/colorWhite"
             app:mt_maxSuggestionsCount="5"
             app:mt_searchIconTint="@color/white"
             app:mt_hintColor="@color/white"
