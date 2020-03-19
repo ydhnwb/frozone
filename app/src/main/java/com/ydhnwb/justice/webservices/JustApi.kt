@@ -4,6 +4,7 @@ import com.google.gson.annotations.SerializedName
 import com.ydhnwb.justice.models.*
 import com.ydhnwb.justice.utils.JusticeUtils
 import okhttp3.OkHttpClient
+import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -51,7 +52,7 @@ interface JusticeAPIService{
 
     @Headers("Content-Type: application/json")
     @POST("api/order")
-    fun createOrder(@Body order : String) : Call<WrappedResponse<Order>>
+    fun createOrder(@Body order : RequestBody) : Call<WrappedResponse<Order>>
 }
 
 data class WrappedResponse<T>(

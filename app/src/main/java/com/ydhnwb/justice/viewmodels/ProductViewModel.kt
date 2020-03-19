@@ -11,6 +11,8 @@ import com.ydhnwb.justice.utils.SingleLiveEvent
 import com.ydhnwb.justice.webservices.JustApi
 import com.ydhnwb.justice.webservices.WrappedListResponse
 import com.ydhnwb.justice.webservices.WrappedResponse
+import okhttp3.MediaType
+import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -173,7 +175,8 @@ class ProductViewModel : ViewModel(){
             state.value = ProductState.IsLoading(true)
             val gson = Gson().toJson(order)
             println(gson)
-            api.createOrder(gson).enqueue(object : Callback<WrappedResponse<Order>>{
+            val body: RequestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), gson)
+            api.createOrder(body).enqueue(object : Callback<WrappedResponse<Order>>{
                 override fun onFailure(call: Call<WrappedResponse<Order>>, t: Throwable) {
                     println("onFailure -> ${t.message}")
                     state.value = ProductState.IsLoading(false)
